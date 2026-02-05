@@ -3,6 +3,7 @@
 
 import os
 import tempfile
+import uuid
 from flask import Flask, send_file, render_template
 from MyQR import myqr
 
@@ -38,7 +39,7 @@ def create_qr(id, amount):
     else:
         url = f"upi://pay?pn=STEUSHIO&pa={upi_id}&cu=INR"
 
-    filename = f"{safe_filename(upi_id)}_qr.png"
+    filename = f"{safe_filename(upi_id)}_{uuid.uuid4().hex}.png"
 
     myqr.run(
         url,
