@@ -40,13 +40,13 @@ def create_qr(id, amount=None):
     filename = f"{safe_filename(upi_id)}_qr.png"
 
     myqr.run(
-        url,
-        version=1,
-        level='H',
-        colorized=False,
-        save_name=filename,
-        save_dir=save_dir
-    )
+    url,
+    level='H',
+    colorized=False,
+    save_name=filename,
+    save_dir=save_dir
+)
+
 
     return f"{save_dir}/{filename}"
 
