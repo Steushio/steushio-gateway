@@ -7,14 +7,15 @@ from flask import Flask, send_file, render_template
 from MyQR import myqr
 
 app = Flask(__name__, template_folder='views', static_folder='/tmp/')
+app.secret_key = os.environ.get('SECRET', 'steushio-secret')
 
-# Optional secret (not required for functionality)
-app.secret = os.environ.get('SECRET')
+
+def safe_filename(text):
+    return text.replace('@', '_').replace('.', '_')
 
 
 @app.route('/css')
 def serve_css():
-    # Serve CSS explicitly (same as original behavior)
     return send_file('static/css/style.css', mimetype='text/css')
 
 
@@ -27,7 +28,6 @@ def create_qr(id, amount=None):
     upi_id = id
     save_dir = tempfile.gettempdir()
 
-    # Build UPI intent
     if amount:
         try:
             amount = round(float(amount), 2)
@@ -37,17 +37,18 @@ def create_qr(id, amount=None):
     else:
         url = f"upi://pay?pn=STEUSHIO&pa={upi_id}&cu=INR"
 
-    # Generate QR (no logo, clean QR)
+    filename = f"{safe_filename(upi_id)}_qr.png"
+
     myqr.run(
         url,
         version=1,
         level='H',
         colorized=False,
-        save_name=f"{upi_id}_qr.png",
+        save_name=filename,
         save_dir=save_dir
     )
 
-    return f"{save_dir}/{upi_id}_qr.png"
+    return f"{save_dir}/{filename}"
 
 
 @app.route('/')
@@ -75,4 +76,3 @@ def amount_payment(id, amount):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, use_reloader=True)
-
