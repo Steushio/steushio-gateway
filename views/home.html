@@ -1,66 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <meta name="author" content="Steushio">
-    <meta name="description" content="Pay securely using your UPI app">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Steushio Gateway</title>
-
-    <!-- Main CSS -->
-    <link rel="stylesheet" type="text/css" href="/css" />
+    <link rel="stylesheet" href="/css">
 </head>
 
 <body>
+<div class="card">
 
-    <div class="card">
+    {% if amount|float > 0 %}
+        <img class="qr" src="/qr/{{ id }}/{{ amount }}">
+        <h2>Pay ₹{{ amount }} to {{ id }}</h2>
+    {% else %}
+        <img class="qr" src="/qr/{{ id }}/0">
+        <h2>Pay to {{ id }}</h2>
+    {% endif %}
 
-        <!-- QR Code -->
-        <div class="banner">
-            <img src="/qr/{{ id }}/{{ amount }}" alt="UPI QR Code" style="max-width:100%; border-radius:12px;">
-        </div>
+    {% if amount|float > 0 %}
+        <a href="upi://pay?pn=STEUSHIO&pa={{ id }}&cu=INR&am={{ amount }}">
+    {% else %}
+        <a href="upi://pay?pn=STEUSHIO&pa={{ id }}&cu=INR">
+    {% endif %}
+        <button>Pay Now</button>
+    </a>
 
-        <!-- Payment text -->
-        {% if amount %}
-            <h2 class="name">Pay ₹{{ amount }} to {{ id }}</h2>
-        {% else %}
-            <h2 class="name">Pay to {{ id }}</h2>
-        {% endif %}
+    <a href="/"><button class="secondary">Create New Link</button></a>
 
-        <div class="title">
-            Open in any UPI app to complete payment
-        </div>
-
-        <!-- Actions -->
-        <div class="actions">
-            <div class="pay-btn">
-
-                {% if amount %}
-                    <a href="upi://pay?pn=STEUSHIO&pa={{ id }}&cu=INR&am={{ amount }}">
-                        <button>Pay Now</button>
-                    </a>
-                {% else %}
-                    <a href="upi://pay?pn=STEUSHIO&pa={{ id }}&cu=INR">
-                        <button>Pay Now</button>
-                    </a>
-                {% endif %}
-
-                <br><br>
-
-                <a href="/">
-                    <button>Create New UPI Link</button>
-                </a>
-
-            </div>
-        </div>
-
-        <div class="desc">
-            STEUSHIO GATEWAY • UPI Redirect Page
-        </div>
-
-    </div>
-
+</div>
 </body>
 </html>
